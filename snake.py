@@ -33,8 +33,8 @@ food.color("red")  # start with red
 food.shapesize(0.50, 0.50)
 food.penup()
 # so we used a random way to display the food
-# x(+/-) 270 px to the left or right
-# y(+/-) 220 px from top or bottom
+# x -270 to +220 px from the left to right
+# y -270 to +220 px from the bottom to top
 x, y = randint(-270, 220), randint(-270, 220)
 food.goto(x, y)
 

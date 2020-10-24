@@ -44,7 +44,7 @@ score.speed(0)
 score.color("white")
 score.penup()
 score.hideturtle()
-score.goto(260, 280)
+score.goto(260, 270)
 score.write("Score: 0", align="right", font=("Courier", 20, "normal"))
 
 # displays high score
@@ -53,7 +53,7 @@ high_score.speed(0)
 high_score.color("white")
 high_score.penup()
 high_score.hideturtle()
-high_score.goto(-290, 280)
+high_score.goto(-290, 270)
 high_score.write("High Score:  0", align="left", font=("Courier", 20, "normal"))
 
 # displays snake life
@@ -62,7 +62,7 @@ lives.speed(0)
 lives.color("white")
 lives.penup()
 lives.hideturtle()
-lives.goto(0, 280)
+lives.goto(0, 270)
 lives.write("Life: 3", align="center", font=("Courier", 20, "normal"))
 
 # Player Snake

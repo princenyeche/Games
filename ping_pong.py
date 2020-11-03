@@ -14,7 +14,9 @@ Author: Prince Nyeche
 A Ping Pong Game made on Python 3.7
 """
 import turtle
+import platform
 import os
+
 
 window = turtle.Screen()
 window.title("Ping Pong Game by @PrinceNyeche")
@@ -97,10 +99,24 @@ def paddle_b_down():
 
 # keyboard binding
 window.listen()
-window.onkeypress(paddle_a_up, "Left")
-window.onkeypress(paddle_a_down, "Right")
+window.onkeypress(paddle_a_up, "w")
+window.onkeypress(paddle_a_down, "s")
 window.onkeypress(paddle_b_up, "Up")
 window.onkeypress(paddle_b_down, "Down")
+
+
+# a function to always play sound no matter the platform
+def system_sound(sound: str = None):
+    if platform.system() == "Darwin":
+        if sound is not None:
+            return os.system(f"afplay {sound}&")
+    if platform.system() == "Linux":
+        if sound is not None:
+            return os.system(f"aplay {sound}&")
+    if platform.system() == "Windows":
+        import winsound
+        if sound is not None:
+            return winsound.PlaySound(sound, winsound.SND_ASYNC)
 
 
 def main():
@@ -123,13 +139,13 @@ def main():
         if ball.ycor() > 290:
             ball.sety(290)
             ball.dy *= -1
-            os.system("afplay sounds/bounce.wav&")
+            system_sound("sounds/bounce.wav")
 
         # bottom
         elif ball.ycor() < -290:
             ball.sety(-290)
             ball.dy *= -1
-            os.system("afplay sounds/bounce.wav&")
+            system_sound("sounds/bounce.wav")
 
         # right
         if ball.xcor() > 390:
@@ -153,12 +169,12 @@ def main():
         # right paddle
         if (340 < ball.xcor() < 350) and (paddle_b.ycor() + 50 > ball.ycor() > paddle_b.ycor() - 50):
             ball.dx *= -1
-            os.system("afplay sounds/bounce.wav&")
+            system_sound("sounds/bounce.wav")
 
         # left paddle
         elif (-340 > ball.xcor() > -350) and (paddle_a.ycor() + 50 > ball.ycor() > paddle_a.ycor() - 50):
             ball.dx *= -1
-            os.system("afplay sounds/bounce.wav&")
+            system_sound("sounds/bounce.wav")
 
 
 if __name__ == "__main__":

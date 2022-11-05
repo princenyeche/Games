@@ -16,97 +16,134 @@ A Ping Pong Game made on Python 3.7
 import turtle
 import platform
 import os
+import json
 
+WIDTH = 800
+HEIGHT = 600
+FILE = "config.json"  # should be in the same path where this pingpong.py file is run
+CONFIG = None
+if os.path.isfile(FILE):
+    CONFIG = json.load(open('config.json'))
+else:
+    raise FileNotFoundError("The configuration file is missing or not found.")
 
-window = turtle.Screen()
-window.title("Ping Pong Game by @PrinceNyeche")
-window.bgcolor("black")
-window.setup(width=800, height=600)
-window.tracer(0)
+GAME_SPEED = float(CONFIG['game_speed'])
+
+WINDOW = turtle.Screen()
+WINDOW.title("Ping Pong Game by @PrinceNyeche")
+WINDOW.bgcolor("black")
+WINDOW.setup(width=WIDTH, height=HEIGHT)
+WINDOW.tracer(0)
 
 # Paddle A
-paddle_a = turtle.Turtle()
-paddle_a.speed(0)
-paddle_a.shape("square")
-paddle_a.color("white")
-paddle_a.shapesize(stretch_wid=5, stretch_len=1)
-paddle_a.penup()
-paddle_a.goto(-350, 0)
+PADDLE_A = turtle.Turtle()
+PADDLE_A.speed(0)
+PADDLE_A.shape("square")
+PADDLE_A.color("white")
+PADDLE_A.shapesize(stretch_wid=5, stretch_len=1)
+PADDLE_A.penup()
+PADDLE_A.goto(-350, 0)
 
 # Paddle B
-paddle_b = turtle.Turtle()
-paddle_b.speed(0)
-paddle_b.shape("square")
-paddle_b.color("white")
-paddle_b.shapesize(stretch_wid=5, stretch_len=1)
-paddle_b.penup()
-paddle_b.goto(350, 0)
+PADDLE_B = turtle.Turtle()
+PADDLE_B.speed(0)
+PADDLE_B.shape("square")
+PADDLE_B.color("white")
+PADDLE_B.shapesize(stretch_wid=5, stretch_len=1)
+PADDLE_B.penup()
+PADDLE_B.goto(350, 0)
 
 # Ball
-ball = turtle.Turtle()
-ball.speed(0)
-ball.shape("circle")
-ball.color("white")
-ball.penup()
-ball.goto(0, 0)
-ball.dx = 2
-ball.dy = -2
+BALL = turtle.Turtle()
+BALL.speed(GAME_SPEED)
+BALL.shape("circle")
+BALL.color("white")
+BALL.penup()
+BALL.goto(0, 0)
+BALL.dx = 2
+BALL.dy = -2
 
 # Pen
-pen = turtle.Turtle()
-pen.speed(0)
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 260)
-pen.write("Player A: 0 Player B: 0", align="center", font=("Courier", 24, "normal"))
-
-# an automated player
-cpu = turtle.Turtle()
-cpu.speed(0)
+PEN = turtle.Turtle()
+PEN.speed(0)
+PEN.color("white")
+PEN.penup()
+PEN.hideturtle()
+PEN.goto(0, 260)
+PEN.write(f"{CONFIG['player_one']}: 0 {CONFIG['player_two']}: 0",
+          align="center", font=("Courier", 24, "normal"))
 
 
-# TODO: automated user
-# Player A -> CPU
-def player_cpu():
-    pass
+# automated user
+# Player A or CPU
+def player_cpu() -> None:
+    """An automated cpu user."""
+    # get the ball position and compare coordinates
+    get_ball = BALL.pos()
+    ball_cord = BALL.xcor(), BALL.ycor()
+
+    def movement():
+        # define the speed for paddle of cpu user 0=fastest, 1=slowest
+        PADDLE_A.speed(CONFIG['menu']['speed'])
+        if get_ball:
+            if (-340 > BALL.xcor() > -350) and (PADDLE_A.ycor() + 50 > BALL.ycor()
+                                                > PADDLE_A.ycor() - 50):
+                BALL.dx *= -1
+                sound_on()
+            # Look at the y-axis left-side
+            if ball_cord > (10, 50):
+                if PADDLE_A.towards(get_ball) < 50:
+                    paddle_a_up()
+                    print(f"{CONFIG['player_one']}: moving up")
+            # Look at the x-axis left-side
+            elif ball_cord < (-50, -10):
+                if PADDLE_A.towards(get_ball) > 100:
+                    paddle_a_down()
+                    print(f"{CONFIG['player_one']}: moving down")
+                # correct movement along this axis
+                elif PADDLE_A.towards(get_ball) < 50:
+                    paddle_a_up()
+                    print(f"{CONFIG['player_one']}: moving up")
+
+    movement()
 
 
-# functions
+# button control functions
 def paddle_a_up():
-    y = paddle_a.ycor()
+    y = PADDLE_A.ycor()
     y += 20
-    paddle_a.sety(y)
+    PADDLE_A.sety(y)
 
 
 def paddle_a_down():
-    y = paddle_a.ycor()
+    y = PADDLE_A.ycor()
     y -= 20
-    paddle_a.sety(y)
+    PADDLE_A.sety(y)
 
 
 def paddle_b_up():
-    y = paddle_b.ycor()
+    y = PADDLE_B.ycor()
     y += 20
-    paddle_b.sety(y)
+    PADDLE_B.sety(y)
 
 
 def paddle_b_down():
-    y = paddle_b.ycor()
+    y = PADDLE_B.ycor()
     y -= 20
-    paddle_b.sety(y)
+    PADDLE_B.sety(y)
 
 
 # keyboard binding
-window.listen()
-window.onkeypress(paddle_a_up, "w")
-window.onkeypress(paddle_a_down, "s")
-window.onkeypress(paddle_b_up, "Up")
-window.onkeypress(paddle_b_down, "Down")
+WINDOW.listen()
+WINDOW.onkeypress(paddle_a_up, "w")
+WINDOW.onkeypress(paddle_a_down, "s")
+WINDOW.onkeypress(paddle_b_up, "Up")
+WINDOW.onkeypress(paddle_b_down, "Down")
 
 
 # a function to always play sound no matter the platform
 def system_sound(sound: str = None):
+    """Creates audio sound"""
     if platform.system() == "Darwin":
         if sound is not None:
             return os.system(f"afplay {sound}&")
@@ -119,64 +156,102 @@ def system_sound(sound: str = None):
             return winsound.PlaySound(sound, winsound.SND_ASYNC)
 
 
+def sound_on():
+    """Enabling sound"""
+    system_sound("sounds/bounce.wav") \
+        if CONFIG["sound"] == "on".lower() else None
+
+
 def main():
-    # Score
+    # Scoreboard
     score_a = 0
     score_b = 0
+    global GAME_SPEED
+    keep_score_track = 0
+    idle_time = 0
     while True:
-        window.update()
+        WINDOW.update()
 
         # move the ball
-        ball.setx(ball.xcor() + ball.dx)
-        ball.sety(ball.ycor() + ball.dy)
+        BALL.setx(BALL.xcor() + BALL.dx)
+        BALL.sety(BALL.ycor() + BALL.dy)
 
-        # TODO: pending creation of cpu player
-        # cpu player
-        # player_cpu()
+        def speed_up():
+            global GAME_SPEED
+            GAME_SPEED -= 0.001
+            BALL.speed(GAME_SPEED)
+            if idle_time == 15:
+                BALL.dx *= -2.5
+            else:
+                BALL.dx *= -1.1 if BALL.dx < abs(CONFIG['ball_speed_limit']) else -1
 
-        # boarder checking for ball
+        # boarder checking for ball then make sound
         # top
-        if ball.ycor() > 290:
-            ball.sety(290)
-            ball.dy *= -1
-            system_sound("sounds/bounce.wav")
+        if BALL.ycor() > 290:
+            BALL.sety(290)
+            BALL.dy *= -1
+            sound_on()
 
         # bottom
-        elif ball.ycor() < -290:
-            ball.sety(-290)
-            ball.dy *= -1
-            system_sound("sounds/bounce.wav")
+        elif BALL.ycor() < -290:
+            BALL.sety(-290)
+            BALL.dy *= -1
+            sound_on()
 
         # right
-        if ball.xcor() > 390:
+        if BALL.xcor() > 390:
             score_a += 1
-            pen.clear()
-            pen.write(f"Player A: {score_a} Player B: {score_b}",
+            PEN.clear()
+            PEN.write(f"{CONFIG['player_one']}: {score_a} {CONFIG['player_two']}: {score_b}",
                       align="center", font=("Courier", 24, "normal"))
-            ball.goto(0, 0)
-            ball.dx *= -1
+            BALL.goto(0, 0)
+            speed_up()
 
         # left
-        elif ball.xcor() < -390:
+        elif BALL.xcor() < -390:
             score_b += 1
-            pen.clear()
-            pen.write(f"Player A: {score_a} Player B: {score_b}",
+            PEN.clear()
+            PEN.write(f"{CONFIG['player_one']}: {score_a} {CONFIG['player_two']}: {score_b}",
                       align="center", font=("Courier", 24, "normal"))
-            ball.goto(0, 0)
-            ball.dx *= -1
+            BALL.goto(0, 0)
+            speed_up()
 
         # Paddle and ball collision
         # right paddle
-        if (340 < ball.xcor() < 350) and (paddle_b.ycor() + 50 > ball.ycor() > paddle_b.ycor() - 50):
-            ball.dx *= -1
-            system_sound("sounds/bounce.wav")
+        if (340 < BALL.xcor() < 350) and (PADDLE_B.ycor() + 50 > BALL.ycor() > PADDLE_B.ycor() - 50):
+            BALL.dx *= -1
+            sound_on()
 
-        # left paddle
-        elif (-340 > ball.xcor() > -350) and (paddle_a.ycor() + 50 > ball.ycor() > paddle_a.ycor() - 50):
-            ball.dx *= -1
-            system_sound("sounds/bounce.wav")
+        if CONFIG["menu"]:
+            # change the menu->player_one=robot for cpu user
+            if CONFIG["menu"]["player_one"] == "robot".lower():
+                keep_score_track = score_a
+                player_cpu()
+            else:
+                # first player left paddle if menu->player_one=human in config file
+                # "AWSD" keyboard use
+                if (-340 > BALL.xcor() > -350) and (PADDLE_A.ycor() + 50 >
+                                                    BALL.ycor() > PADDLE_A.ycor() - 50):
+                    BALL.dx *= -1
+                    sound_on()
+
+        if keep_score_track >= CONFIG['score_limit']:
+            WINDOW.bgcolor("black")
+            PEN.clear()
+            PADDLE_A.goto(800, 800)
+            PADDLE_B.goto(800, 800)
+            BALL.goto(0, 0)
+            BALL.hideturtle()
+            PEN.write(f"{CONFIG['player_one']}: {score_a} {CONFIG['player_two']}: {score_b}",
+                      align="center", font=("Courier", 24, "normal"))
+            BALL.write("GAME OVER", align="center", font=("Courier", 40, "normal"))
+
+        if idle_time == 15:
+            speed_up()
+
+        idle_time += 1
 
 
 if __name__ == "__main__":
     main()
-    window.mainloop()
+    WINDOW.mainloop()

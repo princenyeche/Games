@@ -229,7 +229,7 @@ def main():
                 player_cpu()
             else:
                 # first player left paddle if menu->player_one=human in config file
-                # "AWSD" keyboard use
+                # "WS" keyboard use "w" for up, "s" for down
                 if (-340 > BALL.xcor() > -350) and (PADDLE_A.ycor() + 50 >
                                                     BALL.ycor() > PADDLE_A.ycor() - 50):
                     BALL.dx *= -1

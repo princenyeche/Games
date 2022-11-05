@@ -1,0 +1,9 @@
+{
+  "menu": {"player_one": "robot", "speed": 1},
+  "game_speed": "0.1",
+  "sound": "on",
+  "player_one": "Computer",
+  "player_two": "Player 2",
+  "ball_speed_limit": 10,
+  "score_limit": 40
+}

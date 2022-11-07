@@ -1,9 +1,10 @@
 {
-  "menu": {"player_one": "robot", "speed": 1},
+  "menu": {"player_one": "robot", "speed": 1, "player_two": "robot"},
   "game_speed": "0.1",
   "sound": "on",
-  "player_one": "Computer",
-  "player_two": "Player 2",
+  "ball_speed": -13.5,
+  "player_name_one": "Robotium",
+  "player_name_two": "Robotus",
   "ball_speed_limit": 10,
-  "score_limit": 40
+  "score_limit": 400
 }

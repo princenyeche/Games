@@ -24,7 +24,7 @@ FILE = "config.json"
 
 CONFIG = None
 if os.path.isfile(FILE):
-    CONFIG = json.load(open('config.json'))
+    CONFIG = json.load(open(FILE))
 else:
     raise FileNotFoundError("The configuration file is missing or not found.")
 

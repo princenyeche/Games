@@ -91,8 +91,8 @@ def cpu(attr: bool = True) -> None:
 
     def movement():
         # define the speed for paddle of cpu user 0=fastest, 1=slowest
-        content = PADDLE_A if attr is True else PADDLE_B
-        content.speed(CONFIG['menu']['speed'])
+        controller = PADDLE_A if attr is True else PADDLE_B
+        controller.speed(CONFIG['menu']['speed'])
         y_axis = ball_cord > (10, 50) if attr is \
                                          True else ball_cord > (30, -30)
         x_axis = ball_cord < (-50, -10) if attr is \
@@ -103,27 +103,27 @@ def cpu(attr: bool = True) -> None:
             # get ball/paddle collision
             values = -340 > BALL.xcor() > -350 if attr is True else \
                 340 < BALL.xcor() < 350
-            if values and (content.ycor() + 50
-                           > BALL.ycor() > content.ycor() - 50):
+            if values and (controller.ycor() + 50
+                           > BALL.ycor() > controller.ycor() - 50):
                 BALL.dx *= -1
                 sound_on()
 
             # Look at the y-axis right-side
             if y_axis:
                 my_value = 50 if attr is True else 180
-                if content.towards(get_ball) < my_value:
+                if controller.towards(get_ball) < my_value:
                     paddle_a_up() if attr is \
                                      True else paddle_b_up()
                     print(f"{player}: moving up")
                 else:
                     if attr is False:
-                        if content.towards(get_ball) > 20:
+                        if controller.towards(get_ball) > 20:
                             paddle_b_down()
                             print(f"{player}: moving down")
                             # Look at the x-axis right-side
             elif x_axis:
-                symbol = content.towards(get_ball) < 150 if attr is False \
-                    else content.towards(get_ball) > 100
+                symbol = controller.towards(get_ball) < 150 if attr is False \
+                    else controller.towards(get_ball) > 100
                 if symbol:
                     (paddle_a_up() if attr is True else paddle_b_up()) \
                         if attr is False else \
@@ -133,7 +133,7 @@ def cpu(attr: bool = True) -> None:
                 else:
                     if attr is True:
                         # correct movement along this axis
-                        if content.towards(get_ball) < 50:
+                        if controller.towards(get_ball) < 50:
                             paddle_a_up()
                             print(f"{player}: moving up")
 

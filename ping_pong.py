@@ -255,14 +255,14 @@ def main():
 
         if CONFIG["menu"]:
             # change the menu->player_one=robot for cpu user
-            if CONFIG["menu"]["player_one"] == "robot".lower():
+            if CONFIG["menu"]["player_one"].lower() == "robot":
                 keep_score_track_a = score_a
                 cpu(True)
-            if CONFIG["menu"]["player_two"] == "robot".lower():
+            if CONFIG["menu"]["player_two"].lower() == "robot":
                 keep_score_track_b = score_b
                 cpu(False)
 
-            if CONFIG["menu"]["player_one"] != "robot".lower():
+            if CONFIG["menu"]["player_one"].lower() != "robot":
                 # first player left paddle if menu->player_one=human
                 # in config file
                 # "WS" keyboard use "w" for up, "s" for down
@@ -271,7 +271,7 @@ def main():
                          BALL.ycor() > PADDLE_A.ycor() - 50):
                     BALL.dx *= -1
                     sound_on()
-            if CONFIG["menu"]["player_two"] != "robot".lower():
+            if CONFIG["menu"]["player_two"].lower() != "robot":
                 # second player right paddle if menu->player_two=human
                 # in config file
                 # "up/down arrow keys" keyboard use "up" for up,
